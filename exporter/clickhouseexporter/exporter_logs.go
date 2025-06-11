@@ -89,6 +89,10 @@ func (e *logsExporter) pushLogsData(ctx context.Context, ld plog.Logs) error {
 		resAttr := res.Attributes()
 		serviceName := internal.GetServiceName(resAttr)
 		resAttrMap := internal.AttributesToMap(resAttr)
+		droppedAttrCount := logs.Resource().DroppedAttributesCount()
+		e.logger.Info("resource attributes", zap.Uint32("dropped", droppedAttrCount))
+		e.logger.Info("resource attributes", zap.Int("count", resAttr.Len()))
+
 
 		slLen := logs.ScopeLogs().Len()
 		for j := 0; j < slLen; j++ {
@@ -104,6 +108,8 @@ func (e *logsExporter) pushLogsData(ctx context.Context, ld plog.Logs) error {
 			for k := 0; k < slrLen; k++ {
 				r := scopeLogRecords.At(k)
 				logAttrMap := internal.AttributesToMap(r.Attributes())
+				e.logger.Info("scope log record", zap.String("body", r.Body().Str()))
+				e.logger.Info("scope log record", zap.Any("attributes", r.Attributes().AsRaw()))
 
 				timestamp := r.Timestamp()
 				if timestamp == 0 {

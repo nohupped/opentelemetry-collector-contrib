@@ -39,7 +39,7 @@ func (e *logsExporter) start(ctx context.Context, _ component.Host) error {
 	if err != nil {
 		return err
 	}
-	e.logger.Info("config", zap.String("connection string", dsn))
+	// e.logger.Info("config", zap.String("connection string", dsn))
 	e.db, err = internal.NewClickhouseClient(dsn)
 	if err != nil {
 		return err

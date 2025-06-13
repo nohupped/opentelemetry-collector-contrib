@@ -37,7 +37,14 @@ func createLogsExporter(
 	c := cfg.(*Config)
 	c.collectorVersion = set.BuildInfo.Version
 
-	if featureGateJSON.IsEnabled() {
+	var useJSON bool
+	if c.UseJSON != nil {
+		useJSON = *c.UseJSON
+	} else {
+		useJSON = featureGateJSON.IsEnabled()
+	}
+	
+	if useJSON {
 		exp := newLogsJSONExporter(set.Logger, c)
 
 		return exporterhelper.NewLogs(
@@ -52,6 +59,23 @@ func createLogsExporter(
 			exporterhelper.WithRetry(c.BackOffConfig),
 		)
 	}
+
+
+	// if featureGateJSON.IsEnabled() {
+	// 	exp := newLogsJSONExporter(set.Logger, c)
+
+	// 	return exporterhelper.NewLogs(
+	// 		ctx,
+	// 		set,
+	// 		cfg,
+	// 		exp.pushLogsData,
+	// 		exporterhelper.WithStart(exp.start),
+	// 		exporterhelper.WithShutdown(exp.shutdown),
+	// 		exporterhelper.WithTimeout(c.TimeoutSettings),
+	// 		exporterhelper.WithQueue(c.QueueSettings),
+	// 		exporterhelper.WithRetry(c.BackOffConfig),
+	// 	)
+	// }
 
 	exp := newLogsExporter(set.Logger, c)
 

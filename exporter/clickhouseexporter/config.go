@@ -50,6 +50,8 @@ type Config struct {
 	MetricsTableName string `mapstructure:"metrics_table_name"`
 	// TTL is The data time-to-live example 30m, 48h. 0 means no ttl.
 	TTL time.Duration `mapstructure:"ttl"`
+	// UseJSON is a temporary hack to have json feature controlled via a config rather than a global feature gate
+	UseJSON *bool `mapstructure:"use_json"`
 	// TableEngine is the table engine to use. default is `MergeTree()`.
 	TableEngine TableEngine `mapstructure:"table_engine"`
 	// ClusterName if set will append `ON CLUSTER` with the provided name when creating tables.
